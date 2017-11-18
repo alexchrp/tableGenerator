@@ -55,6 +55,10 @@ public class Cell {
         return horizontalAlign;
     }
 
+    public VerticalAlign getVerticalAlign() {
+        return verticalAlign;
+    }
+
     public String getText() {
         return text;
     }
