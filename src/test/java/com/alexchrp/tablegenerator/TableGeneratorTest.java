@@ -2,6 +2,7 @@ package com.alexchrp.tablegenerator;
 
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
+import com.alexchrp.tablegenerator.borders.Borders;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class TableGeneratorTest {
                 .setColumnsSeparator("|")
                 .setRowsSeparator("-")
                 .setHeaderSeparator("=")
-                .setBorders(true)
+                .setBorders(Borders.NONE)
                 .setHorizontalAlign(HorizontalAlign.LEFT)
                 .setVerticalAlign(VerticalAlign.CENTER)
                 .toString();

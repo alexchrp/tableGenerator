@@ -2,6 +2,7 @@ package com.alexchrp.tablegenerator;
 
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
+import com.alexchrp.tablegenerator.borders.Borders;
 import com.alexchrp.tablegenerator.utils.TextUtils;
 
 import java.util.*;
@@ -24,7 +25,7 @@ public class TableGenerator {
 
     private List<Column> columns = new ArrayList<>();
     
-    private boolean borders = false;
+    private Borders borders = Borders.NONE;
 
     public TableGenerator addRow(Object... cells) {
         addRow(Arrays.asList(cells));
@@ -148,10 +149,10 @@ public class TableGenerator {
         int[] colWidths = evalColWidths(partedRows);
         int colsCount = colWidths.length;
         String rowSeparatingString = createRowSeparator(colWidths, colsCount, rowsSeparator);
-        String horBorder = createRowSeparator(colWidths, colsCount, rowsSeparator);
+        String horBorder = createRowSeparator(colWidths, colsCount, borders.getHorizontalBorder());
         if (!columns.isEmpty()) {
             String headerSeparatingString = createRowSeparator(colWidths, colsCount, headerSeparator);
-            if (borders) {
+            if (borders != Borders.NONE) {
                 sb.append(horBorder);
             }
             List<List<String>> header = partedRows.get(0);
@@ -159,7 +160,7 @@ public class TableGenerator {
             sb.append(headerRow);
             sb.append(headerSeparatingString);
             partedRows.remove(0);
-        } else if (borders) {
+        } else if (borders != Borders.NONE) {
             sb.append(horBorder);
         }
         for (int i = 0; i < this.rows.size(); i++) {
@@ -171,7 +172,7 @@ public class TableGenerator {
                 sb.append(rowSeparatingString);
             }
         }
-        if (borders) {
+        if (borders != Borders.NONE) {
             sb.append(horBorder);
         }
 
@@ -184,8 +185,8 @@ public class TableGenerator {
         for (int j = 0; j < partedRow.get(0).size(); j++) {
             colsCount = partedRow.size();
             for (int k = 0; k < colsCount; k++) {
-                if (borders && k == 0) {
-                    stringBuilder.append(columnsSeparator);
+                if (borders != Borders.NONE && k == 0) {
+                    stringBuilder.append(borders.getVerticalBorder());
                 }
                 HorizontalAlign columnAlign = columns.get(k).getHorizontalAlign();
                 HorizontalAlign cellAlign = curRow.getCells().get(k).getHorizontalAlign();
@@ -201,8 +202,8 @@ public class TableGenerator {
                 stringBuilder.append(horAlign.apply(string, colWidths[k]));
                 if (k < maxCellsCount - 1) {
                     stringBuilder.append(columnsSeparator);
-                } else if (borders) {
-                    stringBuilder.append(columnsSeparator);
+                } else if (borders != Borders.NONE) {
+                    stringBuilder.append(borders.getVerticalBorder());
                 }
             }
             stringBuilder.append(String.format("%n"));
@@ -213,12 +214,12 @@ public class TableGenerator {
     private String createRowSeparator(int[] colWidths, int colsCount, String rowsSeparator) {
         StringBuilder sb = new StringBuilder();
         if (!rowsSeparator.isEmpty()) {
-            if (borders) {
+            if (borders != Borders.NONE) {
                 sb.append("+");
             }
             for (int k = 0; k < colsCount; k++) {
                 sb.append(repeatRowsSeparator(colWidths[k], rowsSeparator));
-                if (k < colsCount - 1 || borders) {
+                if (k < colsCount - 1 || borders != Borders.NONE) {
                     sb.append("+");
                 }
             }
@@ -295,11 +296,11 @@ public class TableGenerator {
         return this;
     }
 
-    public boolean isBorders() {
+    public Borders getBorders() {
         return borders;
     }
 
-    public TableGenerator setBorders(boolean borders) {
+    public TableGenerator setBorders(Borders borders) {
         this.borders = borders;
         return this;
     }
