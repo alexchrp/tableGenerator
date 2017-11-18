@@ -11,9 +11,9 @@ public class Column {
 
     private VerticalAlign verticalAlign;
 
-    private String prefix;
+    private String prefix = "";
 
-    private String postfix;
+    private String postfix = "";
 
     public Column(String title) {
         this.title = title;
