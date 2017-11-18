@@ -1,6 +1,7 @@
 package com.alexchrp.tablegenerator;
 
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
+import com.alexchrp.tablegenerator.aligns.VerticalAlign;
 
 public class Cell {
 
@@ -12,18 +13,42 @@ public class Cell {
         return new Cell(text, horizontalAlign);
     }
 
+    public static Cell of(String text, VerticalAlign verticalAlign) {
+        return new Cell(text, verticalAlign);
+    }
+
+    public static Cell of(String text, HorizontalAlign horizontalAlign, VerticalAlign verticalAlign) {
+        return new Cell(text, horizontalAlign, verticalAlign);
+    }
+
     private final String text;
 
     private final HorizontalAlign horizontalAlign;
 
+    private final VerticalAlign verticalAlign;
+
     private Cell(String text) {
         this.text = text;
         this.horizontalAlign = null;
+        this.verticalAlign = null;
     }
 
     private Cell(String text, HorizontalAlign horizontalAlign) {
         this.text = text;
         this.horizontalAlign = horizontalAlign;
+        this.verticalAlign = null;
+    }
+
+    private Cell(String text, VerticalAlign verticalAlign) {
+        this.text = text;
+        this.verticalAlign = verticalAlign;
+        this.horizontalAlign = null;
+    }
+
+    private Cell(String text, HorizontalAlign horizontalAlign, VerticalAlign verticalAlign) {
+        this.text = text;
+        this.horizontalAlign = horizontalAlign;
+        this.verticalAlign = verticalAlign;
     }
 
     public HorizontalAlign getHorizontalAlign() {
@@ -39,6 +64,7 @@ public class Cell {
         return "Cell{" +
                 "text='" + text + '\'' +
                 ", horizontalAlign=" + horizontalAlign +
+                ", verticalAlign=" + verticalAlign +
                 '}';
     }
 }
