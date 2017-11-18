@@ -14,9 +14,9 @@ class TableGeneratorTest {
         TableGenerator tb = new TableGenerator();
         String table
                 = tb
-                .setColumns("Header 1", "Header 2")
+                .setColumns("Header 1", new Column("Header 2").setPostfix(" p."))
                 .addColumns(new Column("Header 3").setHorizontalAlign(HorizontalAlign.RIGHT)
-                        .setVerticalAlign(VerticalAlign.BOTTOM))
+                        .setVerticalAlign(VerticalAlign.BOTTOM).setPrefix("$ "))
                 .addRow("Test1\n\nTest1", "Test1", "Test1")
                 .addRow("Test2 Test2", "Test2\nTest2", Cell.of("Test2", VerticalAlign.TOP))
                 .addRow("Test2 Test2", "Test2\nTest2")
