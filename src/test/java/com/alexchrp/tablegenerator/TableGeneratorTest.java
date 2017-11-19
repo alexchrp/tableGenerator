@@ -33,4 +33,17 @@ class TableGeneratorTest {
         System.out.println(table);
         
     }
+
+    @Test
+    void twoDimensionalArrayTest() {
+        String[][] rows = {{"Test1", "Test1", "Test1", "Test1"},
+                {"Test2", "Test2", "Test2"},
+                {null, "Test3", "Test3", "Test3"},
+                {"Test4", "Test4", "Test4", "Test4"}};
+        String table = new TableGenerator()
+                .addRows(rows)
+                .toString();
+        System.out.println(table);
+
+    }
 }

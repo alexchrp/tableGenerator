@@ -46,6 +46,11 @@ public class TableGenerator {
         return this;
     }
 
+    public TableGenerator addRows(String[][] rows) {
+        Arrays.stream(rows).forEach(this::addRow);
+        return this;
+    }
+
     public TableGenerator addColumns(Object... columns) {
         addColumns(Arrays.asList(columns));
         return this;
@@ -115,18 +120,21 @@ public class TableGenerator {
 
     private Row createHeaderRow() {
         return new Row(columns.stream()
-                .map(column -> Cell.of(column.getTitle(), column.getHorizontalAlign(), column.getVerticalAlign()))
+                .map(column -> Cell.of(column.getTitle(), column.getHorizontalAlign(),
+                        column.getVerticalAlign()))
                 .collect(Collectors.toList()));
     }
 
     private void addPrefixesAndPostfixes(List<List<String>> cells) {
         for (int i = 0; i < cells.size(); i++) {
             List<String> cell = cells.get(i);
-            final Column currentColumn = columns.get(i);
-            final String cellPrefix = currentColumn.getPrefix();
-            final String cellPostfix = currentColumn.getPostfix();
-            for (int j = 0; j < cell.size(); j++) {
-                cell.set(j, addPrefixAndPostfixIfNotEmpty(cellPrefix, cellPostfix, cell.get(j)));
+            if (columns.size() > i) {
+                final Column currentColumn = columns.get(i);
+                final String cellPrefix = currentColumn.getPrefix();
+                final String cellPostfix = currentColumn.getPostfix();
+                for (int j = 0; j < cell.size(); j++) {
+                    cell.set(j, addPrefixAndPostfixIfNotEmpty(cellPrefix, cellPostfix, cell.get(j)));
+                }
             }
         }
     }
@@ -139,15 +147,15 @@ public class TableGenerator {
             Cell cell = cells.get(i);
             if (cell != null) {
                 VerticalAlign cellVerticalAlign = cell.getVerticalAlign();
-                final Column currentColumn = columns.get(i);
-                VerticalAlign columnVerticalAlign = currentColumn.getVerticalAlign();
                 VerticalAlign verAlign;
                 if (cellVerticalAlign != null) {
                     verAlign = cellVerticalAlign;
-                } else if (columnVerticalAlign != null) {
-                    verAlign = columnVerticalAlign;
+                } else if (columns.size() > i && columns.get(i) != null
+                        && columns.get(i).getVerticalAlign() != null) {
+                    verAlign = columns.get(i).getVerticalAlign();
                 } else {
                     verAlign = verticalAlign;
+
                 }
                 List<String> strings = verAlign.apply(cell.getText(), rowHeight);
                 newRow.add(strings);
@@ -156,7 +164,8 @@ public class TableGenerator {
         return newRow;
     }
 
-    private String addPrefixAndPostfixIfNotEmpty(String cellPrefix, String cellPostfix, String cellText) {
+    private String addPrefixAndPostfixIfNotEmpty(String cellPrefix, String cellPostfix,
+                                                 String cellText) {
         if (!cellText.trim().isEmpty()) {
             return cellPrefix + cellText + cellPostfix;
         }
@@ -174,7 +183,8 @@ public class TableGenerator {
         String rowSeparatingString = createRowSeparator(colWidths, colsCount, rowsSeparator);
         String horBorder = createRowSeparator(colWidths, colsCount, borders.getHorizontalBorder());
         if (!columns.isEmpty()) {
-            String headerSeparatingString = createRowSeparator(colWidths, colsCount, headerSeparator);
+            String headerSeparatingString = createRowSeparator(colWidths, colsCount,
+                    headerSeparator);
             if (borders != Borders.NONE) {
                 sb.append(horBorder);
             }
@@ -202,7 +212,8 @@ public class TableGenerator {
         return sb.toString();
     }
 
-    private String createRow(int maxCellsCount, int[] colWidths, Row curRow, List<List<String>> partedRow) {
+    private String createRow(int maxCellsCount, int[] colWidths, Row curRow,
+                             List<List<String>> partedRow) {
         int colsCount;
         StringBuilder stringBuilder = new StringBuilder();
         for (int j = 0; j < partedRow.get(0).size(); j++) {
@@ -211,14 +222,13 @@ public class TableGenerator {
                 if (borders != Borders.NONE && k == 0) {
                     stringBuilder.append(borders.getVerticalBorder());
                 }
-                final Column currentColumn = columns.get(k);
-                HorizontalAlign columnAlign = currentColumn.getHorizontalAlign();
                 HorizontalAlign cellAlign = curRow.getCells().get(k).getHorizontalAlign();
                 HorizontalAlign horAlign;
                 if (cellAlign != null) {
                     horAlign = cellAlign;
-                } else if (columnAlign != null) {
-                    horAlign = columnAlign;
+                } else if (columns.size() > k && columns.get(k) != null
+                        && columns.get(k).getHorizontalAlign() != null) {
+                    horAlign = columns.get(k).getHorizontalAlign();
                 } else {
                     horAlign = horizontalAlign;
                 }
