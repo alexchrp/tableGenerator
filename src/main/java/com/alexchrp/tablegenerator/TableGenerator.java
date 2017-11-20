@@ -22,6 +22,8 @@ public class TableGenerator {
 
     private TableStyle tableStyle = TableStyles.NONE;
 
+    private boolean paintBounds = true;
+
     public TableGenerator addRow(Object... cells) {
         addRow(Arrays.asList(cells));
         return this;
@@ -172,18 +174,16 @@ public class TableGenerator {
         StringBuilder sb = new StringBuilder();
         List<List<List<String>>> partedRows = getPreparedLines();
         int[] colWidths = evalColWidths(partedRows);
-        int colsCount = colWidths.length;
         String rowSeparatingString = createRowSeparator(colWidths);
-        String topBorder = createTopBorder(colWidths);
+        String topBorder = paintBounds ? createTopBorder(colWidths) : "";
         if (!columns.isEmpty()) {
-            String headerSeparatingString = createRowSeparator(colWidths);
             if (tableStyle != TableStyles.NONE) {
                 sb.append(topBorder);
             }
             List<List<String>> header = partedRows.get(0);
-            String headerRow = createRow(maxCellsCount, colWidths, createHeaderRow(), header);
+            String headerRow = createRow(colWidths, createHeaderRow(), header);
             sb.append(headerRow);
-            sb.append(headerSeparatingString);
+            sb.append(rowSeparatingString);
             partedRows.remove(0);
         } else if (tableStyle != TableStyles.NONE) {
             sb.append(topBorder);
@@ -191,13 +191,13 @@ public class TableGenerator {
         for (int i = 0; i < this.rows.size(); i++) {
             Row curRow = this.rows.get(i);
             List<List<String>> partedRow = partedRows.get(i);
-            String row = createRow(maxCellsCount, colWidths, curRow, partedRow);
+            String row = createRow(colWidths, curRow, partedRow);
             sb.append(row);
-            if (i < partedRows.size() - 1 && !tableStyle.getHorizontalLine().isEmpty()) {
+            if (i < partedRows.size() - 1) {
                 sb.append(rowSeparatingString);
             }
         }
-        if (tableStyle != TableStyles.NONE) {
+        if (paintBounds) {
             String bottomBorder = createBottomBorder(colWidths);
             sb.append(bottomBorder);
         }
@@ -206,58 +206,50 @@ public class TableGenerator {
     }
 
     private String createBottomBorder(int[] colWidths) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tableStyle.getLeftBottomCorner());
-        for (int i = 0; i < colWidths.length; i++) {
-            int colWidth = colWidths[i];
-            stringBuilder.append(repeatRowsSeparator(colWidth, tableStyle.getHorizontalLine()));
-            if (i < colWidths.length - 1) {
-                stringBuilder.append(tableStyle.getBottomIntersection());
-            }
-        }
-        stringBuilder.append(tableStyle.getRightBottomCorner())
-                .append(System.lineSeparator());
-        return stringBuilder.toString();
+        return createHorizontalSeparator(colWidths, tableStyle.getLeftBottomCorner(),
+                tableStyle.getHorizontalLine(), tableStyle.getBottomIntersection(),
+                tableStyle.getRightBottomCorner());
     }
 
     private String createTopBorder(int[] colWidths) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tableStyle.getLeftTopCorner());
-        for (int i = 0; i < colWidths.length; i++) {
-            int colWidth = colWidths[i];
-            stringBuilder.append(repeatRowsSeparator(colWidth, tableStyle.getHorizontalLine()));
-            if (i < colWidths.length - 1) {
-                stringBuilder.append(tableStyle.getTopIntersection());
-            }
-        }
-        stringBuilder.append(tableStyle.getRightTopCorner())
-                .append(System.lineSeparator());
-        return stringBuilder.toString();
+        return createHorizontalSeparator(colWidths, tableStyle.getLeftTopCorner(),
+                tableStyle.getHorizontalLine(), tableStyle.getTopIntersection(),
+                tableStyle.getRightTopCorner());
     }
 
     private String createRowSeparator(int[] colWidths) {
+        return createHorizontalSeparator(colWidths,
+                paintBounds ? tableStyle.getLeftIntersection() : "",
+                tableStyle.getHorizontalLine(), tableStyle.getCenterIntersection(),
+                paintBounds ? tableStyle.getRightIntersection() : "");
+    }
+
+    private String createHorizontalSeparator(int[] colWidths, String left, String horLine,
+                                             String center, String right) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(tableStyle.getLeftIntersection());
+        stringBuilder.append(left);
         for (int i = 0; i < colWidths.length; i++) {
             int colWidth = colWidths[i];
-            stringBuilder.append(repeatRowsSeparator(colWidth, tableStyle.getHorizontalLine()));
+            stringBuilder.append(repeatString(colWidth, horLine));
             if (i < colWidths.length - 1) {
-                stringBuilder.append(tableStyle.getCenterIntersection());
+                stringBuilder.append(center);
             }
         }
-        stringBuilder.append(tableStyle.getRightIntersection())
-                .append(System.lineSeparator());
+        stringBuilder.append(right);
+        if (stringBuilder.length() > 0) {
+            stringBuilder.append(System.lineSeparator());
+        }
         return stringBuilder.toString();
     }
 
-    private String createRow(int maxCellsCount, int[] colWidths, Row curRow,
+    private String createRow(int[] colWidths, Row curRow,
                              List<List<String>> partedRow) {
         int colsCount;
         StringBuilder stringBuilder = new StringBuilder();
         for (int j = 0; j < partedRow.get(0).size(); j++) {
             colsCount = partedRow.size();
             for (int k = 0; k < colsCount; k++) {
-                if (tableStyle != TableStyles.NONE && k == 0) {
+                if (k == 0 && paintBounds) {
                     stringBuilder.append(tableStyle.getVerticalLine());
                 }
                 HorizontalAlign cellAlign = curRow.getCells().get(k).getHorizontalAlign();
@@ -273,9 +265,9 @@ public class TableGenerator {
                 final String cellText = partedRow.get(k).get(j);
                 final String textWithAlign = horAlign.apply(cellText, colWidths[k]);
                 stringBuilder.append(textWithAlign);
-                if (k < maxCellsCount - 1) {
+                if (k < colWidths.length - 1) {
                     stringBuilder.append(tableStyle.getVerticalLine());
-                } else if (tableStyle != TableStyles.NONE) {
+                } else if (paintBounds) {
                     stringBuilder.append(tableStyle.getVerticalLine());
                 }
             }
@@ -297,14 +289,14 @@ public class TableGenerator {
                 .max().orElse(0);
     }
 
-    private String repeatRowsSeparator(int separatorLength, String rowsSeparator) {
-        if (rowsSeparator.isEmpty()) {
+    private String repeatString(int repeatCount, String text) {
+        if (text.isEmpty()) {
             return "";
         }
-        int count = separatorLength / rowsSeparator.length();
-        int addSymbsCount = separatorLength % rowsSeparator.length();
-        return String.join("", Collections.nCopies(count, rowsSeparator))
-                + rowsSeparator.substring(0, addSymbsCount);
+        int count = repeatCount / text.length();
+        int addSymbsCount = repeatCount % text.length();
+        return String.join("", Collections.nCopies(count, text))
+                + text.substring(0, addSymbsCount);
     }
 
     public HorizontalAlign getHorizontalAlign() {
@@ -331,6 +323,15 @@ public class TableGenerator {
 
     public TableGenerator setTableStyle(TableStyle tableStyle) {
         this.tableStyle = tableStyle;
+        return this;
+    }
+
+    public boolean isPaintBounds() {
+        return paintBounds;
+    }
+
+    public TableGenerator setPaintBounds(boolean paintBounds) {
+        this.paintBounds = paintBounds;
         return this;
     }
 }

@@ -25,10 +25,10 @@ public class CustomTableStyle implements TableStyle {
     private String centerIntersection;
 
     CustomTableStyle(String verticalLine, String horizontalLine, String rightTopCorner,
-                     String leftTopCorner, String leftBottomCorner, String rightBottomCorner,
-                     String leftIntersection, String rightIntersection,
-                     String topIntersection, String bottomIntersection,
-                     String centerIntersection) {
+                            String leftTopCorner, String leftBottomCorner, String rightBottomCorner,
+                            String leftIntersection, String rightIntersection,
+                            String topIntersection, String bottomIntersection,
+                            String centerIntersection) {
         this.verticalLine = verticalLine;
         this.horizontalLine = horizontalLine;
         this.rightTopCorner = rightTopCorner;

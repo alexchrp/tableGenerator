@@ -13,9 +13,6 @@ public class CustomTableStyleBuilder {
     private String bottomIntersection = "";
     private String centerIntersection = "";
 
-    public CustomTableStyleBuilder() {
-    }
-
     public CustomTableStyleBuilder setVerticalLine(String verticalLine) {
         this.verticalLine = verticalLine;
         return this;

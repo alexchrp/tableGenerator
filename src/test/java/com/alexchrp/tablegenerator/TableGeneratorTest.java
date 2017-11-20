@@ -2,7 +2,6 @@ package com.alexchrp.tablegenerator;
 
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
-import com.alexchrp.tablegenerator.styles.CustomTableStyle;
 import com.alexchrp.tablegenerator.styles.CustomTableStyleBuilder;
 import com.alexchrp.tablegenerator.styles.TableStyle;
 import com.alexchrp.tablegenerator.styles.TableStyles;
@@ -16,6 +15,9 @@ class TableGeneratorTest {
         final Column column3 = new Column("Header 3").setHorizontalAlign(HorizontalAlign.RIGHT)
                 .setVerticalAlign(VerticalAlign.BOTTOM).setPrefix("$ ");
         final Column column2 = new Column("Header 2").setPostfix(" p.");
+        TableStyle customStyle = new CustomTableStyleBuilder()
+                .setVerticalLine("   ")
+                .createCustomTableStyle();
         String table = tb
                 .setColumns("Header 1", column2, column3)
                 .addRow("Test1\n\nTest1", "Test1", "Test1")
@@ -28,6 +30,7 @@ class TableGeneratorTest {
                 .setTableStyle(TableStyles.SOLID)
                 .setHorizontalAlign(HorizontalAlign.LEFT)
                 .setVerticalAlign(VerticalAlign.CENTER)
+                .setPaintBounds(false)
                 .toString();
         System.out.println(table);
     }
@@ -38,11 +41,10 @@ class TableGeneratorTest {
                 {"Test2", "Test2", "Test2"},
                 {null, "Test3", "Test3", "Test3"},
                 {"Test4", "Test4", "Test4", "Test4"}};
-        TableStyle tableStyle = new CustomTableStyleBuilder().setVerticalLine(" | ")
-                .createCustomTableStyle();
         String table = new TableGenerator()
                 .addRows(rows)
-                .setTableStyle(tableStyle)
+                .setTableStyle(TableStyles.SOLID)
+//                .setPaintBounds(true)
                 .toString();
         System.out.println(table);
 
