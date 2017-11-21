@@ -3,6 +3,7 @@ package com.alexchrp.tablegenerator.styles;
 public enum TableStyles implements TableStyle {
 
     NONE("", "", "", "", "", "", "", "", "", "", ""),
+    SPACES(" ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " "),
     SIMPLE("-", "|", "+", "+", "+", "+", "+", "+", "+", "+", "+"),
     DOUBLE("═", "║", "╔", "╗", "╚", "╝", "╠", "╣", "╦", "╩", "╬"),
     SOLID("─", "│", "┌", "┐", "└", "┘", "├", "┤", "┬", "┴", "┼"),
