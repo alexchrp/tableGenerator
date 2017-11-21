@@ -24,6 +24,10 @@ public class TableGenerator {
 
     private boolean paintBounds = true;
 
+    private boolean paintColumnsSeparators = true;
+
+    private boolean paintRowsSeparators = true;
+
     public TableGenerator addRow(Object... cells) {
         addRow(Arrays.asList(cells));
         return this;
@@ -177,7 +181,7 @@ public class TableGenerator {
         String rowSeparatingString = createRowSeparator(colWidths);
         String topBorder = paintBounds ? createTopBorder(colWidths) : "";
         if (!columns.isEmpty()) {
-            if (tableStyle != TableStyles.NONE) {
+            if (paintBounds) {
                 sb.append(topBorder);
             }
             List<List<String>> header = partedRows.get(0);
@@ -185,7 +189,7 @@ public class TableGenerator {
             sb.append(headerRow);
             sb.append(rowSeparatingString);
             partedRows.remove(0);
-        } else if (tableStyle != TableStyles.NONE) {
+        } else if (paintBounds) {
             sb.append(topBorder);
         }
         for (int i = 0; i < this.rows.size(); i++) {
@@ -193,7 +197,7 @@ public class TableGenerator {
             List<List<String>> partedRow = partedRows.get(i);
             String row = createRow(colWidths, curRow, partedRow);
             sb.append(row);
-            if (i < partedRows.size() - 1) {
+            if (i < partedRows.size() - 1 && paintRowsSeparators) {
                 sb.append(rowSeparatingString);
             }
         }
@@ -207,20 +211,23 @@ public class TableGenerator {
 
     private String createBottomBorder(int[] colWidths) {
         return createHorizontalSeparator(colWidths, tableStyle.getLeftBottomCorner(),
-                tableStyle.getHorizontalLine(), tableStyle.getBottomIntersection(),
+                tableStyle.getHorizontalLine(),
+                paintColumnsSeparators ? tableStyle.getBottomIntersection() : "",
                 tableStyle.getRightBottomCorner());
     }
 
     private String createTopBorder(int[] colWidths) {
         return createHorizontalSeparator(colWidths, tableStyle.getLeftTopCorner(),
-                tableStyle.getHorizontalLine(), tableStyle.getTopIntersection(),
+                tableStyle.getHorizontalLine(),
+                paintColumnsSeparators ? tableStyle.getTopIntersection() : "",
                 tableStyle.getRightTopCorner());
     }
 
     private String createRowSeparator(int[] colWidths) {
         return createHorizontalSeparator(colWidths,
                 paintBounds ? tableStyle.getLeftIntersection() : "",
-                tableStyle.getHorizontalLine(), tableStyle.getCenterIntersection(),
+                tableStyle.getHorizontalLine(),
+                paintColumnsSeparators ? tableStyle.getCenterIntersection() : "",
                 paintBounds ? tableStyle.getRightIntersection() : "");
     }
 
@@ -230,7 +237,7 @@ public class TableGenerator {
         stringBuilder.append(left);
         for (int i = 0; i < colWidths.length; i++) {
             int colWidth = colWidths[i];
-            stringBuilder.append(repeatString(colWidth, horLine));
+            stringBuilder.append(repeatString(horLine, colWidth));
             if (i < colWidths.length - 1) {
                 stringBuilder.append(center);
             }
@@ -266,7 +273,9 @@ public class TableGenerator {
                 final String textWithAlign = horAlign.apply(cellText, colWidths[k]);
                 stringBuilder.append(textWithAlign);
                 if (k < colWidths.length - 1) {
-                    stringBuilder.append(tableStyle.getVerticalLine());
+                    if (paintColumnsSeparators) {
+                        stringBuilder.append(tableStyle.getVerticalLine());
+                    }
                 } else if (paintBounds) {
                     stringBuilder.append(tableStyle.getVerticalLine());
                 }
@@ -289,14 +298,14 @@ public class TableGenerator {
                 .max().orElse(0);
     }
 
-    private String repeatString(int repeatCount, String text) {
-        if (text.isEmpty()) {
+    private String repeatString(String string, int newStringLength) {
+        if (string.isEmpty()) {
             return "";
         }
-        int count = repeatCount / text.length();
-        int addSymbsCount = repeatCount % text.length();
-        return String.join("", Collections.nCopies(count, text))
-                + text.substring(0, addSymbsCount);
+        int count = newStringLength / string.length();
+        int addSymbolsCount = newStringLength % string.length();
+        return String.join("", Collections.nCopies(count, string))
+                + string.substring(0, addSymbolsCount);
     }
 
     public HorizontalAlign getHorizontalAlign() {
@@ -332,6 +341,24 @@ public class TableGenerator {
 
     public TableGenerator setPaintBounds(boolean paintBounds) {
         this.paintBounds = paintBounds;
+        return this;
+    }
+
+    public boolean isPaintColumnsSeparators() {
+        return paintColumnsSeparators;
+    }
+
+    public TableGenerator setPaintColumnsSeparators(boolean paintColumnsSeparators) {
+        this.paintColumnsSeparators = paintColumnsSeparators;
+        return this;
+    }
+
+    public boolean isPaintRowsSeparators() {
+        return paintRowsSeparators;
+    }
+
+    public TableGenerator setPaintRowsSeparators(boolean paintRowsSeparators) {
+        this.paintRowsSeparators = paintRowsSeparators;
         return this;
     }
 }

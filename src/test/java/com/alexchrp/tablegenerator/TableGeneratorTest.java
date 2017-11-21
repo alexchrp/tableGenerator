@@ -13,7 +13,7 @@ class TableGeneratorTest {
     void toStringTest() {
         TableGenerator tb = new TableGenerator();
         final Column column3 = new Column("Header 3").setHorizontalAlign(HorizontalAlign.RIGHT)
-                .setVerticalAlign(VerticalAlign.BOTTOM).setPrefix("$ ");
+                .setVerticalAlign(VerticalAlign.BOTTOM).setPrefix("$");
         final Column column2 = new Column("Header 2").setPostfix(" p.");
         TableStyle customStyle = new CustomTableStyleBuilder()
                 .setVerticalLine("   ")
@@ -30,7 +30,6 @@ class TableGeneratorTest {
                 .setTableStyle(TableStyles.SOLID)
                 .setHorizontalAlign(HorizontalAlign.LEFT)
                 .setVerticalAlign(VerticalAlign.CENTER)
-                .setPaintBounds(false)
                 .toString();
         System.out.println(table);
     }
@@ -43,8 +42,7 @@ class TableGeneratorTest {
                 {"Test4", "Test4", "Test4", "Test4"}};
         String table = new TableGenerator()
                 .addRows(rows)
-                .setTableStyle(TableStyles.SOLID)
-//                .setPaintBounds(true)
+                .setTableStyle(TableStyles.SPACES)
                 .toString();
         System.out.println(table);
 
