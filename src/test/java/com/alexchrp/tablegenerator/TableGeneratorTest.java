@@ -15,9 +15,6 @@ class TableGeneratorTest {
         final Column column3 = new Column("Header 3").setHorizontalAlign(HorizontalAlign.RIGHT)
                 .setVerticalAlign(VerticalAlign.BOTTOM).setPrefix("$");
         final Column column2 = new Column("Header 2").setPostfix(" p.");
-        TableStyle customStyle = new CustomTableStyleBuilder()
-                .setVerticalLine("   ")
-                .createCustomTableStyle();
         String table = tb
                 .setColumns("Header 1", column2, column3)
                 .addRow("Test1\n\nTest1", "Test1", "Test1")
@@ -27,7 +24,7 @@ class TableGeneratorTest {
                 .addRow("Test3 Test3", "Test3Test3\nTest3")
                 .addRow("Test4", Cell.of("Test4", HorizontalAlign.RIGHT),
                         Cell.of("Test4", HorizontalAlign.LEFT))
-                .setTableStyle(TableStyles.SOLID)
+                .setTableStyle(TableStyles.DOUBLE)
                 .setHorizontalAlign(HorizontalAlign.LEFT)
                 .setVerticalAlign(VerticalAlign.CENTER)
                 .toString();
@@ -40,9 +37,14 @@ class TableGeneratorTest {
                 {"Test2", "Test2", "Test2"},
                 {null, "Test3", "Test3", "Test3"},
                 {"Test4", "Test4", "Test4", "Test4"}};
+        TableStyle customStyle = new CustomTableStyleBuilder()
+                .setVerticalLine("   ")
+                .setHorizontalLine(" ")
+                .createCustomTableStyle();
         String table = new TableGenerator()
                 .addRows(rows)
-                .setTableStyle(TableStyles.SPACES)
+                .setTableStyle(customStyle)
+                .setPaintBounds(false)
                 .toString();
         System.out.println(table);
 

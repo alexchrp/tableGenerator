@@ -4,7 +4,6 @@ import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
 import com.alexchrp.tablegenerator.styles.TableStyle;
 import com.alexchrp.tablegenerator.styles.TableStyles;
-import com.alexchrp.tablegenerator.utils.TextUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -80,16 +79,16 @@ public class TableGenerator {
     }
 
     private int[] evalColWidths(List<List<List<String>>> rows) {
-        int cols = rows.stream().mapToInt(List::size).max().orElse(0);
-        int[] widths = new int[cols];
+        int columnsCount = rows.stream().mapToInt(List::size).max().orElse(0);
+        int[] widths = new int[columnsCount];
         rows.forEach(row -> {
             for (int colNum = 0; colNum < row.size(); colNum++) {
-                widths[colNum] = Math.max(widths[colNum], row.get(colNum).stream()
+                final int cellWidth = row.get(colNum).stream()
                         .mapToInt(String::length)
-                        .max().orElse(0));
+                        .max().orElse(0);
+                widths[colNum] = Math.max(widths[colNum], cellWidth);
             }
         });
-
         return widths;
     }
 
@@ -98,10 +97,14 @@ public class TableGenerator {
                 .map(Optional::ofNullable)
                 .mapToInt(o
                         -> o.map(Cell::getText)
-                        .map(TextUtils::getStringHeight)
+                        .map(this::getStringHeight)
                         .orElse(0))
                 .max()
                 .orElse(0);
+    }
+
+    private Integer getStringHeight(String string) {
+        return string.split(System.lineSeparator()).length;
     }
 
     private List<List<List<String>>> getPreparedLines() {
@@ -154,7 +157,6 @@ public class TableGenerator {
                     verAlign = columns.get(i).getVerticalAlign();
                 } else {
                     verAlign = verticalAlign;
-
                 }
                 List<String> strings = verAlign.apply(cell.getText(), rowHeight);
                 newRow.add(strings);
@@ -178,27 +180,24 @@ public class TableGenerator {
         StringBuilder sb = new StringBuilder();
         List<List<List<String>>> partedRows = getPreparedLines();
         int[] colWidths = evalColWidths(partedRows);
-        String rowSeparatingString = createRowSeparator(colWidths);
-        String topBorder = paintBounds ? createTopBorder(colWidths) : "";
+        if (paintBounds) {
+            sb.append(createTopBorder(colWidths));
+        }
+        String rowSeparator = createRowSeparator(colWidths);
         if (!columns.isEmpty()) {
-            if (paintBounds) {
-                sb.append(topBorder);
-            }
             List<List<String>> header = partedRows.get(0);
-            String headerRow = createRow(colWidths, createHeaderRow(), header);
+            String headerRow = getRowText(createHeaderRow(), header, colWidths);
             sb.append(headerRow);
-            sb.append(rowSeparatingString);
+            sb.append(rowSeparator);
             partedRows.remove(0);
-        } else if (paintBounds) {
-            sb.append(topBorder);
         }
         for (int i = 0; i < this.rows.size(); i++) {
             Row curRow = this.rows.get(i);
             List<List<String>> partedRow = partedRows.get(i);
-            String row = createRow(colWidths, curRow, partedRow);
+            String row = getRowText(curRow, partedRow, colWidths);
             sb.append(row);
             if (i < partedRows.size() - 1 && paintRowsSeparators) {
-                sb.append(rowSeparatingString);
+                sb.append(rowSeparator);
             }
         }
         if (paintBounds) {
@@ -249,26 +248,15 @@ public class TableGenerator {
         return stringBuilder.toString();
     }
 
-    private String createRow(int[] colWidths, Row curRow,
-                             List<List<String>> partedRow) {
-        int colsCount;
+    private String getRowText(Row row, List<List<String>> partedRow, int[] colWidths) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int j = 0; j < partedRow.get(0).size(); j++) {
-            colsCount = partedRow.size();
+            int colsCount = partedRow.size();
             for (int k = 0; k < colsCount; k++) {
                 if (k == 0 && paintBounds) {
                     stringBuilder.append(tableStyle.getVerticalLine());
                 }
-                HorizontalAlign cellAlign = curRow.getCells().get(k).getHorizontalAlign();
-                HorizontalAlign horAlign;
-                if (cellAlign != null) {
-                    horAlign = cellAlign;
-                } else if (columns.size() > k && columns.get(k) != null
-                        && columns.get(k).getHorizontalAlign() != null) {
-                    horAlign = columns.get(k).getHorizontalAlign();
-                } else {
-                    horAlign = horizontalAlign;
-                }
+                HorizontalAlign horAlign = getHorizontalAlign(row, k);
                 final String cellText = partedRow.get(k).get(j);
                 final String textWithAlign = horAlign.apply(cellText, colWidths[k]);
                 stringBuilder.append(textWithAlign);
@@ -280,15 +268,29 @@ public class TableGenerator {
                     stringBuilder.append(tableStyle.getVerticalLine());
                 }
             }
-            stringBuilder.append(String.format("%n"));
+            stringBuilder.append(System.lineSeparator());
         }
         return stringBuilder.toString();
     }
 
-    private void fillEmptyCells(int maxCellsCount) {
+    private HorizontalAlign getHorizontalAlign(Row row, int colNum) {
+        HorizontalAlign cellAlign = row.getCells().get(colNum).getHorizontalAlign();
+        HorizontalAlign horAlign;
+        if (cellAlign != null) {
+            horAlign = cellAlign;
+        } else if (columns.size() > colNum && columns.get(colNum) != null
+                && columns.get(colNum).getHorizontalAlign() != null) {
+            horAlign = columns.get(colNum).getHorizontalAlign();
+        } else {
+            horAlign = horizontalAlign;
+        }
+        return horAlign;
+    }
+
+    private void fillEmptyCells(int columnsCount) {
         rows.stream()
-                .filter(row -> row.getCells().size() < maxCellsCount)
-                .forEach(row -> IntStream.range(0, maxCellsCount - row.getCells().size())
+                .filter(row -> row.getCells().size() < columnsCount)
+                .forEach(row -> IntStream.range(0, columnsCount - row.getCells().size())
                         .forEach(i -> row.addCell("")));
     }
 

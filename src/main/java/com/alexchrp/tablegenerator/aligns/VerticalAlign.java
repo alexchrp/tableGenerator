@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
-import static com.alexchrp.tablegenerator.utils.TextUtils.getStringHeight;
-
 public enum VerticalAlign {
 
     TOP(VerticalAlign::addNewLinesToBottom),
@@ -39,15 +37,16 @@ public enum VerticalAlign {
     }
 
     private static List<String> addNewLinesToTopAndBottom(String text, Integer size) {
-        int linesNum = size - getStringHeight(text);
+        final List<String> splitString = splitString(text);
+        int linesNum = size - splitString.size();
         List<String> strings = getNewLines(linesNum / 2);
-        strings.addAll(splitString(text));
+        strings.addAll(splitString);
         strings.addAll(getNewLines(linesNum / 2 + linesNum % 2));
         return strings;
     }
 
     private static List<String> splitString(String string) {
-        return new ArrayList<>(Arrays.asList(string.split(String.format("%n"))));
+        return new ArrayList<>(Arrays.asList(string.split(System.lineSeparator())));
     }
     
     private static List<String> getNewLines(int numOfNewLines) {

@@ -1,5 +1,8 @@
 package com.alexchrp.tablegenerator;
 
+import com.alexchrp.tablegenerator.aligns.VerticalAlign;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
