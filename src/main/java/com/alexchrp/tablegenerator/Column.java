@@ -71,8 +71,4 @@ public class Column {
         this.postfix = postfix;
         return this;
     }
-
-    public Column createColumn() {
-        return new Column(title, horizontalAlign, verticalAlign, prefix, postfix);
-    }
 }

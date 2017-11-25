@@ -2,9 +2,10 @@ package com.alexchrp.tablegenerator.aligns;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
+
+import static com.alexchrp.tablegenerator.utils.TextUtilities.getEmptyStrings;
 
 public enum VerticalAlign {
 
@@ -24,14 +25,14 @@ public enum VerticalAlign {
 
     private static List<String> addNewLinesToTop(String string, int size) {
         List<String> strings = splitString(string);
-        List<String> newLines = getNewLines(size - strings.size());
+        List<String> newLines = getEmptyStrings(size - strings.size());
         newLines.addAll(strings);
         return newLines;
     }
 
     private static List<String> addNewLinesToBottom(String string, int size) {
         List<String> strings = splitString(string);
-        List<String> newLines = getNewLines(size - strings.size());
+        List<String> newLines = getEmptyStrings(size - strings.size());
         strings.addAll(newLines);
         return strings;
     }
@@ -39,18 +40,14 @@ public enum VerticalAlign {
     private static List<String> addNewLinesToTopAndBottom(String text, Integer size) {
         final List<String> splitString = splitString(text);
         int linesNum = size - splitString.size();
-        List<String> strings = getNewLines(linesNum / 2);
+        List<String> strings = getEmptyStrings(linesNum / 2);
         strings.addAll(splitString);
-        strings.addAll(getNewLines(linesNum / 2 + linesNum % 2));
+        strings.addAll(getEmptyStrings(linesNum / 2 + linesNum % 2));
         return strings;
     }
 
     private static List<String> splitString(String string) {
         return new ArrayList<>(Arrays.asList(string.split(System.lineSeparator())));
-    }
-    
-    private static List<String> getNewLines(int numOfNewLines) {
-        return new ArrayList<>(Collections.nCopies(numOfNewLines, ""));
     }
     
 }

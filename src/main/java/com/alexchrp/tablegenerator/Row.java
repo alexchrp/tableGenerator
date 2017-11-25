@@ -3,8 +3,10 @@ package com.alexchrp.tablegenerator;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Row {
 
@@ -24,8 +26,19 @@ public class Row {
         return this;
     }
 
+    public Row addCells(Collection<String> newCells) {
+        cells.addAll(newCells.stream()
+                .map(Cell::of)
+                .collect(Collectors.toList()));
+        return this;
+    }
+
     public List<Cell> getCells() {
         return Collections.unmodifiableList(cells);
+    }
+
+    public int getSize() {
+        return cells.size();
     }
 
     @Override
