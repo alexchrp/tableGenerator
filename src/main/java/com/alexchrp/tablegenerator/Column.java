@@ -3,36 +3,42 @@ package com.alexchrp.tablegenerator;
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
 
+/**
+ * Represents column of table, defines preferences which can be applied to a column,
+ * doesn't content actual content of table
+ */
 public class Column {
 
-    private String title;
+    private String header;
 
     private HorizontalAlign horizontalAlign;
 
     private VerticalAlign verticalAlign;
 
+    // prefix which will be added to every line in column
     private String prefix = "";
 
+    // postfix which will be added to every line in column
     private String postfix = "";
 
-    public Column(String title) {
-        this.title = title;
+    public Column(String header) {
+        this.header = header;
     }
 
-    private Column(String title, HorizontalAlign horizontalAlign, VerticalAlign verticalAlign, String prefix, String postfix) {
-        this.title = title;
+    private Column(String header, HorizontalAlign horizontalAlign, VerticalAlign verticalAlign, String prefix, String postfix) {
+        this.header = header;
         this.horizontalAlign = horizontalAlign;
         this.verticalAlign = verticalAlign;
         this.prefix = prefix;
         this.postfix = postfix;
     }
 
-    public String getTitle() {
-        return title;
+    public String getHeader() {
+        return header;
     }
 
-    public Column setTitle(String title) {
-        this.title = title;
+    public Column setHeader(String header) {
+        this.header = header;
         return this;
     }
 

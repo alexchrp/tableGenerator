@@ -1,5 +1,8 @@
 package com.alexchrp.tablegenerator.styles;
 
+/**
+ * Defines elements which will be used for painting a table
+ */
 public interface TableStyle {
 
     public String getVerticalLine();

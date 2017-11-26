@@ -3,6 +3,9 @@ package com.alexchrp.tablegenerator;
 import com.alexchrp.tablegenerator.aligns.HorizontalAlign;
 import com.alexchrp.tablegenerator.aligns.VerticalAlign;
 
+/**
+ * Represents one cell with text in table which may contain multiple lines of text
+ */
 public class Cell {
 
     public static Cell of(String text) {

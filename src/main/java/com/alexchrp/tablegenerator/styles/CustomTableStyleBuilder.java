@@ -1,5 +1,8 @@
 package com.alexchrp.tablegenerator.styles;
 
+/**
+ * Builder class for creating {@link CustomTableStyle}
+ */
 public class CustomTableStyleBuilder {
     private String verticalLine = "";
     private String horizontalLine = "";

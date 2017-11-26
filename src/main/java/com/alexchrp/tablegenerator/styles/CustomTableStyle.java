@@ -1,5 +1,9 @@
 package com.alexchrp.tablegenerator.styles;
 
+/**
+ * Serves for defining custom table styles
+ */
+
 public class CustomTableStyle implements TableStyle {
 
     private String verticalLine;

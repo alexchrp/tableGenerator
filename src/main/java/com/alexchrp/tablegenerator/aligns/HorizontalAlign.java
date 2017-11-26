@@ -2,6 +2,10 @@ package com.alexchrp.tablegenerator.aligns;
 
 import java.util.function.BiFunction;
 
+/**
+ *  The enum to represent horizontal align of text
+ */
+
 public enum HorizontalAlign {
     LEFT((text, size) -> String.format("%1$-" + size + "s", text)),
     CENTER((text, size) -> {
@@ -18,7 +22,14 @@ public enum HorizontalAlign {
         this.applyAlign = applyAlign;
     }
 
-    public String apply(String string, Integer stringSize) {
-        return applyAlign.apply(string, stringSize);
+    /**
+     * Applies align to a string, if string longer than desired size returns the same string
+     *
+     * @param string the string to which apply the alignment
+     * @param stringLength length of aligned string
+     * @return aligned string of passed or original length
+     */
+    public String apply(String string, Integer stringLength) {
+        return applyAlign.apply(string, stringLength);
     }
 }

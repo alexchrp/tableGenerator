@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Represents row of table, contains cells with actual table content
+ */
 public class Row {
 
     private final List<Cell> cells;

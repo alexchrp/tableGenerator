@@ -1,5 +1,8 @@
 package com.alexchrp.tablegenerator.styles;
 
+/**
+ * Contains common table styles
+ */
 public enum TableStyles implements TableStyle {
 
     NONE("", "", "", "", "", "", "", "", "", "", ""),
