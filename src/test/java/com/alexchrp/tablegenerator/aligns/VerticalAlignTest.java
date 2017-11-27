@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class VerticalAlignTest {
 
     @Test
-    void applyTopAlign() {
+    void applyTopAlignTest() {
         final String line1 = "test";
         final String line2 = "String";
         String testString = line1 + System.lineSeparator() + line2;
@@ -24,7 +24,7 @@ class VerticalAlignTest {
     }
 
     @Test
-    void applyCenterAlign() {
+    void applyCenterAlignTest() {
         final String line1 = "test";
         final String line2 = "String";
         String testString = line1 + System.lineSeparator() + line2;
@@ -39,7 +39,7 @@ class VerticalAlignTest {
     }
 
     @Test
-    void applyBottomAlign() {
+    void applyBottomAlignTest() {
         final String line1 = "test";
         final String line2 = "String";
         String testString = line1 + System.lineSeparator() + line2;
@@ -51,5 +51,44 @@ class VerticalAlignTest {
         assertEquals("", alignBottom.get(0));
         assertEquals("", alignBottom.get(1));
         assertEquals("", alignBottom.get(2));
+    }
+
+    @Test
+    void applyEmptyStringTopAlignTest() {
+        String testString = "";
+        int stringHeight = 5;
+        List<String> alignTop = VerticalAlign.TOP.apply(testString, stringHeight);
+        assertEquals(stringHeight, alignTop.size());
+        assertEquals("", alignTop.get(0));
+        assertEquals("", alignTop.get(1));
+        assertEquals("", alignTop.get(2));
+        assertEquals("", alignTop.get(3));
+        assertEquals("", alignTop.get(4));
+    }
+
+    @Test
+    void applyEmptyStringCenterAlignTest() {
+        String testString = "";
+        int stringHeight = 5;
+        List<String> alignTop = VerticalAlign.CENTER.apply(testString, stringHeight);
+        assertEquals(stringHeight, alignTop.size());
+        assertEquals("", alignTop.get(0));
+        assertEquals("", alignTop.get(1));
+        assertEquals("", alignTop.get(2));
+        assertEquals("", alignTop.get(3));
+        assertEquals("", alignTop.get(4));
+    }
+
+    @Test
+    void applyEmptyStringBottomAlignTest() {
+        String testString = "";
+        int stringHeight = 5;
+        List<String> alignTop = VerticalAlign.BOTTOM.apply(testString, stringHeight);
+        assertEquals(stringHeight, alignTop.size());
+        assertEquals("", alignTop.get(0));
+        assertEquals("", alignTop.get(1));
+        assertEquals("", alignTop.get(2));
+        assertEquals("", alignTop.get(3));
+        assertEquals("", alignTop.get(4));
     }
 }

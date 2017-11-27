@@ -93,4 +93,22 @@ class HorizontalAlignTest {
         final String rightAlign = HorizontalAlign.RIGHT.apply(testString, STRING_SIZE);
         assertEquals(testString, rightAlign);
     }
+
+    @Test
+    void leftAlignEmptyStringZeroLengthTest() {
+        final String leftAlign = HorizontalAlign.LEFT.apply("", 0);
+        assertEquals(0, leftAlign.length());
+    }
+
+    @Test
+    void centerAlignEmptyStringZeroLengthTest() {
+        final String centerAlign = HorizontalAlign.CENTER.apply("", 0);
+        assertEquals(0, centerAlign.length());
+    }
+
+    @Test
+    void rightAlignEmptyStringZeroLengthTest() {
+        final String rightAlign = HorizontalAlign.RIGHT.apply("", 0);
+        assertEquals(0, rightAlign.length());
+    }
 }
