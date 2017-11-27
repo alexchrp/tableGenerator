@@ -30,6 +30,9 @@ public enum HorizontalAlign {
      * @return aligned string of passed or original length
      */
     public String apply(String string, Integer stringLength) {
+        if (stringLength == 0) {
+            return "";
+        }
         return applyAlign.apply(string, stringLength);
     }
 }
