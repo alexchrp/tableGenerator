@@ -49,4 +49,46 @@ class TableGeneratorTest {
         System.out.println(table);
 
     }
+
+    @Test
+    void emptyTableTest() {
+        TableGenerator tb = new TableGenerator();
+        String table = tb.toString();
+        System.out.println(table);
+    }
+
+    @Test
+    void oneCellTableTest() {
+        TableGenerator tb = new TableGenerator()
+                .addRow("Test\nString")
+                .setTableStyle(TableStyles.SOLID);
+        String table = tb.toString();
+        System.out.println(table);
+    }
+
+    @Test
+    void nullCellsTableAlignLeftTest() {
+        TableGenerator tb = new TableGenerator()
+                .addRow(null, null, null);
+        String table = tb.toString();
+        System.out.println(table);
+    }
+
+    @Test
+    void nullCellsTableAlignCenterTest() {
+        TableGenerator tb = new TableGenerator()
+                .addRow(null, null, null)
+                .setHorizontalAlign(HorizontalAlign.CENTER);
+        String table = tb.toString();
+        System.out.println(table);
+    }
+
+    @Test
+    void nullCellsTableAlignRightTest() {
+        TableGenerator tb = new TableGenerator()
+                .addRow(null, null, null)
+                .setHorizontalAlign(HorizontalAlign.RIGHT);
+        String table = tb.toString();
+        System.out.println(table);
+    }
 }
