@@ -1,12 +1,9 @@
 # TableGenerator
-
 A library for easy creation of plain text tables with flexible style settings. 
 ## Installation
-___
 #### JAR 
 You can download the latest .jar file from [GitHub](https://github.com/alexchrp/tableGenerator/raw/master/TableGenerator.jar).
 ## Examples
-___
 #### Simple table
 ```java
 String table = new TableGenerator()
